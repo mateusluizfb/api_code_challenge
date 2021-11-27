@@ -5,6 +5,8 @@ class CreateDnsService
   end
 
   def self.create_hostnames(hostnames_attributes)
+    return [] if hostnames_attributes.blank?
+
     hostnames_attributes
       .map { |attributes| { name: attributes[:hostname] } }
       .map { |attributes| Hostname.find_or_create_by(attributes) }

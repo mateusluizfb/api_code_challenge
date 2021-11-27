@@ -27,6 +27,11 @@ RSpec.describe CreateDnsService do
 
       expect(DomainNameSystem.last.hostnames.count).to eq(1)
     end
+
+    it 'creates dns for with blank hostnames' do
+      CreateDnsService.call(dns_attributes: dns_attributes, hostnames_attributes: nil)
+      expect(DomainNameSystem.last.hostnames.count).to eq(0)
+    end
   end
 
 end
