@@ -11,36 +11,9 @@ class FindDnsRecordsService
 
   def self.find_dns_records(included_hostnames, excluded_hostnames, page)
     DomainNameSystem
-      .then { |dns_records| exclude_hostnames(dns_records, excluded_hostnames) }
-      .then { |dns_records| include_hostnames(dns_records, included_hostnames) }
+      .then { |dns_records| QueryDnsRecordsByExcludedHostList.call(dns_records, excluded_hostnames) }
+      .then { |dns_records| QueryDnsRecordsByIncludedHostList.call(dns_records, included_hostnames) }
       .page(page)
-  end
-
-  def self.include_hostnames(dns_records, included_hostnames)
-    return dns_records if included_hostnames.blank?
-
-    hostnames_list = included_hostnames.include?(',') ? included_hostnames.split(',') : [excluded_hostnames]
-
-    dns_records
-      .joins(:hostnames)
-      .where(hostnames: { name: hostnames_list })
-      .group('domain_name_systems.id')
-      .having('count(domain_name_systems.id) = ?', hostnames_list.count)
-  end
-
-  def self.exclude_hostnames(dns_records, excluded_hostnames)
-    return dns_records if excluded_hostnames.blank?
-
-    hostnames_list = excluded_hostnames.include?(',') ? excluded_hostnames.split(',') : [excluded_hostnames]
-
-    records_to_remove = dns_records
-      .joins(:hostnames)
-      .where(hostnames: { name: hostnames_list })
-      .group('domain_name_systems.id')
-      .having('count(domain_name_systems.id) = ?', hostnames_list.count)
-      .pluck(:id)
-
-    dns_records.where.not(id: records_to_remove)
   end
 
   def self.format_dns_records(dns_records)
