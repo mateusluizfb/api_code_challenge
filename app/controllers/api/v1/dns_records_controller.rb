@@ -8,8 +8,10 @@ module Api
 
       # POST /dns_records
       def create
-        dns = DomainNameSystem.new(dns_params)
-        dns.hostnames << hostnames_params.map { |params| Hostname.new(params) }
+        dns = CreateDnsService.call(
+          dns_attributes: dns_params,
+          hostnames_attributes: hostnames_params
+        )
 
         return render json: { id: dns.id }, status: 201 if dns.save
 
@@ -26,7 +28,6 @@ module Api
         params
           .require(:dns_records)
           .permit(hostnames_attributes: [:hostname])['hostnames_attributes']
-          .map { |attributes| { name: attributes[:hostname] } }
       end
     end
   end
