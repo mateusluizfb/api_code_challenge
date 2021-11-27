@@ -349,6 +349,29 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
   end
 
   describe '#create' do
-    # TODO
+    let(:params) do
+      {
+        'dns_records': {
+          'ip': '1.1.1.1',
+          'hostnames_attributes': [
+            {
+              'hostname': 'lorem.com'
+            }
+          ]
+        }
+      }
+    end
+
+    subject { post :create, params: params }
+
+    it 'creates a Dns record' do
+      expect { subject }.to change { DomainNameSystem.count }
+        .from(0).to(1)
+    end
+
+    it 'creates a Hostname record' do
+      expect { subject }.to change { Hostname.count }
+        .from(0).to(1)
+    end
   end
 end
