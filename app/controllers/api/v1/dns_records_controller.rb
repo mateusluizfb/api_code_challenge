@@ -3,8 +3,11 @@ module Api
     class DnsRecordsController < ApplicationController
       # GET /dns_records
       def index
+        return head :unprocessable_entity if params[:page].blank?
+
         result = FindDnsRecordsService.call(
           included_hostnames: params[:included],
+          excluded_hostnames: params[:excluded],
           page: params[:page]
         )
 
