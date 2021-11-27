@@ -207,12 +207,12 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
             ],
             related_hostnames: [
               {
-                count: 3,
-                hostname: amet
-              },
-              {
                 count: 1,
                 hostname: lorem
+              },
+              {
+                count: 3,
+                hostname: amet
               },
               {
                 count: 1,

@@ -3,14 +3,12 @@ module Api
     class DnsRecordsController < ApplicationController
       # GET /dns_records
       def index
-        dns_records = DomainNameSystem.page(params[:page])
-        hostnames_count = dns_records.flat_map(&:hostnames).map(&:name).tally
+        result = FindDnsRecordsService.call(
+          included_hostnames: params[:included],
+          page: params[:page]
+        )
 
-        render json: {
-          total_records: dns_records.size,
-          records: dns_records.map { |dns| { id: dns.id, ip_address: dns.ip } },
-          related_hostnames: hostnames_count.map { |name, count| { hostname: name, count: count } }
-        }
+        render json: result, status: 200
       end
 
       # POST /dns_records
@@ -28,7 +26,7 @@ module Api
       private
 
       def dns_params
-        params.require(:dns_records).permit(:ip)
+        params.require(:dns_records).permit(:included, :ip)
       end
 
       def hostnames_params
