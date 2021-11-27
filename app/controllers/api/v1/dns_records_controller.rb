@@ -13,7 +13,8 @@ module Api
           hostnames_attributes: hostnames_params
         )
 
-        return render json: { id: dns.id }, status: 201 if dns.save
+        byebug
+        return render json: { id: dns.id }, status: 201 if dns.valid?
 
         render json: { errors: dns.errors }, status: 400
       end

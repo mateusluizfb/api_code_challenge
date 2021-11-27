@@ -362,16 +362,16 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
       }
     end
 
-    subject { post :create, params: params }
-
-    it 'creates a Dns record' do
-      expect { subject }.to change { DomainNameSystem.count }
-        .from(0).to(1)
+    it '201 for valid request' do
+      post :create, params: params
+      expect(response).to have_http_status(201)
     end
 
-    it 'creates a Hostname record' do
-      expect { subject }.to change { Hostname.count }
-        .from(0).to(1)
+    it '400 for invalid request' do
+      invalid_params = { 'dns_records': { 'ip': nil, hostnames_attributes: [] } }
+
+      post :create, params: invalid_params
+      expect(response).to have_http_status(400)
     end
   end
 end
