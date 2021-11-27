@@ -13,10 +13,9 @@ module Api
           hostnames_attributes: hostnames_params
         )
 
-        byebug
         return render json: { id: dns.id }, status: 201 if dns.valid?
 
-        render json: { errors: dns.errors }, status: 400
+        render json: { errors: dns.errors.full_messages }, status: 400
       end
 
       private

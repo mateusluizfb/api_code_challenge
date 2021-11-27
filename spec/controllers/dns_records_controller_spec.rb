@@ -367,11 +367,24 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
       expect(response).to have_http_status(201)
     end
 
+    it 'returns id for valid request' do
+      post :create, params: params
+      body = JSON.parse(response.body)
+      expect(body).to eq({ 'id' => DomainNameSystem.last.id })
+    end
+
     it '400 for invalid request' do
       invalid_params = { 'dns_records': { 'ip': nil, hostnames_attributes: [] } }
 
       post :create, params: invalid_params
       expect(response).to have_http_status(400)
+    end
+
+    it 'returns errors for invalid request' do
+      invalid_params = { 'dns_records': { 'ip': nil, hostnames_attributes: [] } }
+      post :create, params: invalid_params
+      body = JSON.parse(response.body)
+      expect(body).to eq({ 'errors' => ["Ip can't be blank"] })
     end
   end
 end
