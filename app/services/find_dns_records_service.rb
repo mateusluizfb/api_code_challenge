@@ -12,8 +12,14 @@ class FindDnsRecordsService
   def self.find_dns_records(included_hostnames, excluded_hostnames, page)
     DomainNameSystem
       .then { |dns_records| QueryDnsRecordsByExcludedHostList.call(dns_records, excluded_hostnames) }
-      .then { |dns_records| QueryDnsRecordsByIncludedHostList.call(dns_records, included_hostnames) }
+      .then { |dns_records| QueryDnsRecordsByIncludedHostList.call(dns_records, hostnames_list(included_hostnames)) }
       .page(page)
+  end
+
+  def self.hostnames_list(hosts)
+    return [] if hosts.blank?
+
+    hosts.include?(',') ? hosts.split(',') : [hosts]
   end
 
   def self.format_dns_records(dns_records)

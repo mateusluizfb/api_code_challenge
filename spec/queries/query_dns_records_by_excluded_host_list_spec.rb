@@ -6,7 +6,7 @@ RSpec.describe QueryDnsRecordsByExcludedHostList do
       hostname = Hostname.new(name: 'google.com')
       DomainNameSystem.create(ip: '1.1.1.1', hostnames: [hostname])
 
-      result = described_class.call(DomainNameSystem, 'google.com')
+      result = described_class.call(DomainNameSystem, ['google.com'])
       expect(result).to be_blank
     end
 
@@ -14,7 +14,7 @@ RSpec.describe QueryDnsRecordsByExcludedHostList do
       hostname = Hostname.new(name: 'google.com')
       DomainNameSystem.create(ip: '1.1.1.1', hostnames: [hostname])
 
-      result = described_class.call(DomainNameSystem, 'yahoo.com')
+      result = described_class.call(DomainNameSystem, ['yahoo.com'])
       expect(result).to_not be_blank
     end
   end
