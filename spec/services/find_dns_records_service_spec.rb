@@ -37,7 +37,7 @@ RSpec.describe FindDnsRecordsService do
       expect(result).to eq(
         {
           total_records: 1,
-          records: [{:id=>1, :ip_address=>"1.1.1.1"}],
+          records: [{:id=>51, :ip_address=>"1.1.1.1"}],
           related_hostnames: [{:count=>1, :hostname=>"google.com"}]
         }
       )
